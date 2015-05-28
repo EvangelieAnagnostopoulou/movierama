@@ -1,0 +1,25 @@
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button> <a class="navbar-brand" href="/"> Movierama</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+             {% if user.is_authenticated %} <!-- If user is logged in -->
+                 <a class="btn navbar-btn" href="/create_movie">New Movie</a>
+                 <span class="user-info">
+                        Welcome back, <a href="/user?name={{user.username}}">{{user.username}}</a>
+                        <a href="/accounts/logout"><img src="/static/img/logout.png" class="admin-icon"/></a>
+                    </span>
+            {% else %} <!-- If user hasn't logged in -->
+                <a class="btn navbar-btn" href="/accounts/login/">Sign in</a>
+                <a class="btn navbar-btn" href="/accounts/signup">Create Account</a>
+
+            {% endif %}
+        </div>
+    </div>
+</nav>

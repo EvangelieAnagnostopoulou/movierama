@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="width:100%;">
+    <h2>Add Movie</h2>
+    <form action="/create_movie" method="post">{% csrf_token %}
+
+        <div>
+            <label><b>Title:</b></label><br>
+            {{form.title}}
+        </div>
+        <div>
+            <label><b>Description:</b></label><br>
+            {{form.description}}
+        </div>
+        <br>
+        <input type="submit" class="btn btn-primary" value="Create" />
+    </form>
+
+</div>
+
+{% endblock %}

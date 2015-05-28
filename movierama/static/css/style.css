@@ -1,0 +1,67 @@
+body {
+    font-size: 12px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #1ABC9C;
+       font-weight: 300;
+}
+
+.wrapper {
+    margin: 0 auto;
+    padding: 10px;
+}
+
+label{
+    font-size: 12px;
+    font-family: Lato,Helvetica,Arial,sans-serif;
+}
+
+.admin-icon {
+    opacity: 0.5;
+    transition: opacity 0.25s;
+}
+
+.admin-icon:hover {
+    opacity: 1;
+}
+
+.error {
+    box-shadow: 0 0 5px #96281B;
+    background: #F22613;
+    color: #fff;
+}
+
+.btn-red {
+    background: #F22613;
+    color: #fff;
+}
+
+.btn-red:hover {
+    background: #EF4836;
+}
+
+.btn-green {
+    background: #26A65B;
+    color: #fff;
+}
+
+.btn-green:hover {
+    background: #2ECC71;
+}
+
+.user-info {
+    color: #fff;
+    padding: 10px;
+    float: right;
+}
+
+.user-info img {
+    height: 20px;
+}
+.rcorners {
+    border-radius: 25px;
+    border: 2px solid #1ABC9C;
+    padding: 20px;
+    margin: 10px;
+}

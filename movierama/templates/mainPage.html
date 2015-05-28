@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="width: 90%; margin: 0px auto;margin-left: auto ;margin-right: auto ;">
+{% if user %}
+    <p>Sort by: <a href="/user?name={{name}}&sort_by=like">Likes</a> | <a href="/user?name={{name}}&sort_by=hate"> Hates</a> | <a href="/user?name={{name}}&sort_by=date"> Dates</a></p>
+{% else %}
+    <p>Sort by: <a href="/?sort_by=like">Likes</a> | <a href="/?sort_by=hate"> Hates</a> | <a href="/?sort_by=date"> Dates</a></p>
+{% endif %}
+    {% for e in all_entries %}
+    {% load humanize %}
+    <div class="rcorners">
+        <h3><b>{{e.title}}</b></h3>
+        <p>Posted by <a href="/user?name={{e.username}}"> {{e.username}}</a><span style="margin-left:32px"></span> {{e.date| naturalday}}</p>
+        <p>{{e.description}}</p>
+        <a href="like?movie={{e.id}}">{{e.like}} Likes</a> | <a href="like?movie={{e.id}}">{{e.dislike}} Hates</a>
+        {% if user.is_authenticated %}
+            {% if e.username != user.username %}
+                {% if e.status == 0 %}
+                    <p style="float:right"><a href="/vote?id={{e.id}}&status=like">Like</a> | <a href="/vote?id={{e.id}}&status=dislike">Dislike</a></p>
+                {% endif%}
+                {% if e.status == 1 %}
+                    <p style="float:right"> You like this movie | <a href="/vote?id={{e.id}}&status=dislike">Unlike</a></p>
+                {% endif%}
+                {% if e.status == -1 %}
+                    <p style="float:right"> You hate this movie | <a href="/vote?id={{e.id}}&status=like">Unhate</a></p>
+                {% endif %}
+
+            {% endif %}
+        {% endif %}
+
+    </div>
+    {%endfor%}
+
+</div>
+
+{% endblock %}

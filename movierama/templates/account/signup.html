@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+ <div class="div-form-table" style=" width: 40%;">
+
+    <b>Create user form:</b><br><br>
+    <form method="post" action=".">  {% csrf_token %}
+        {% if form.errors %}
+            <div class="error">
+                <p>{{form.errors}}</p>
+            </div>
+        {% endif %}
+
+        <fieldset>
+            <label>Username <input type="text" name="username" placeholder="Your username" class="form-control" style="height: 25px;"/></label><br />
+            <label>Password <input type="password" name="password1" placeholder="Your password" class="form-control" style="height: 25px;"/></label><br />
+            <label>Repeat password <input type="password" name="password2" placeholder="Your password again" class="form-control" style="height: 25px;"/></label><br />
+        </fieldset>
+
+        <input type="submit" value="Create user">
+    </form>
+ </div>
+
+{% endblock %}
