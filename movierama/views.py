@@ -1,27 +1,41 @@
-from django.shortcuts import render, redirect, render_to_response
-from django import forms
-from movierama.forms import MovieForm, UserForm
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect
+from movierama.forms import MovieForm
 from movierama.models import Movies, MovieRate
-from datetime import datetime
-
-
 
 __author__ = 'evangelie'
 
 
-def WelcomePage(request):
-     #get all movies from database
-    sort = request.GET.get('sort_by')
+"""
+* gets all Movies in the database
+* optionally specify ORDER BY clause
+* optionally specify movie creator
+"""
+def get_movies(sort=None, username=None):
     if sort == 'like':
-        all_entries = Movies.objects.all().order_by('-likes')
+        order = '-likes'
     elif sort == 'hate':
-        all_entries = Movies.objects.all().order_by('-hates')
-    elif sort == 'date':
-        all_entries = Movies.objects.all().order_by('-date')
+        order = '-hates'
     else:
-        all_entries = Movies.objects.all().order_by('-date')
+        order = '-date'
+
+    # fetch movies from database
+    if username:
+        movies = Movies.objects.filter(username=username)
+    else:
+        movies = Movies.objects.all()
+
+    movies = movies.order_by(order)
+
+    return movies
+
+
+def WelcomePage(request):
+    sort = request.GET.get("sort_by")
+    movies = get_movies(sort=sort)
+
     m_rate =MovieRate.objects.all()
-    params = {'all_entries': all_entries, 'home': True, 'movie_rate': m_rate}
+    params = {'movies': movies, 'home': True, 'movie_rate': m_rate}
     return render(request, "mainPage.html", params)
 
 
@@ -44,9 +58,9 @@ def create(request):
             new_movie.username = request.user.username
             #save to database new movie
             new_movie.save()
-            all_entries = Movies.objects.all()
-            params = {'all_entries': all_entries}
-            return render(request, "mainPage.html",params)
+
+            # return to home page
+            return redirect("/")
 
 
 #Vote movie
@@ -63,7 +77,7 @@ def vote(request):
             else:
                 MovieRate.objects.create(movie=movie, user=request.user, rate=vote)
         else:
-            print('You cannnot vote your movie')
+            return HttpResponseForbidden('You cannnot vote your movie')
 
         movie.likes = MovieRate.objects.filter(movie=movie, rate=1).count()
         movie.hates = MovieRate.objects.filter(movie=movie, rate=-1).count()
@@ -72,20 +86,12 @@ def vote(request):
         return redirect("/")
 
 def user_profile(request):
-    #get all user's movies
+    # get all user's movies
     name= request.GET.get('name')
     sort = request.GET.get('sort_by')
-    if sort == 'like':
-        all_entries = Movies.objects.filter(username=name).order_by('-likes')
-    elif sort == 'hate':
-        all_entries = Movies.objects.filter(username=name).order_by('-hates')
-    elif sort == 'date':
-        all_entries = Movies.objects.filter(username=name).order_by('-date')
-    else:
-        all_entries = Movies.objects.filter(username=name).order_by('-date')
-        #all_entries = Movies.objects.filter(username=name)
-    print all_entries
-    return render(request, "mainPage.html", {'all_entries': all_entries, 'userprofile': True, 'name': name })
+
+    movies = get_movies(sort=sort, username=name)
+    return render(request, "mainPage.html", {'movies': movies, 'userprofile': True, 'name': name })
 
 def like(request):
     m= request.GET.get('movie')
@@ -96,7 +102,7 @@ def like(request):
         user.append(e.user)
     return render(request, "likePage.html", {'user': user, 'movie_id': movie_id, })
 
-def dislike(request):
+def hate(request):
     m= request.GET.get('movie')
     movie_id =Movies.objects.get(id=m)
     exist_like = MovieRate.objects.filter(movie=movie_id, rate=-1)

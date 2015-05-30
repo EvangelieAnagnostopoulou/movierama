@@ -2,52 +2,21 @@
 
 {% block content %}
 
-<div style="width: 90%; margin: 0px auto;margin-left: auto ;margin-right: auto ;">
-{% if userprofile %}
-    <p>Sort by: <a href="/user?name={{name}}&sort_by=like">Likes</a> | <a href="/user?name={{name}}&sort_by=hate"> Hates</a> | <a href="/user?name={{name}}&sort_by=date"> Dates</a></p>
-{% else %}
-    <p>Sort by: <a href="/?sort_by=like">Likes</a> | <a href="/?sort_by=hate"> Hates</a> | <a href="/?sort_by=date"> Dates</a></p>
-{% endif %}
-    {% for e in all_entries %}
-    {% load humanize %}
-    <div class="rcorners">
-        <h3><b>{{e.title}}</b></h3>
-        {% if e.username == user.username %}
-        <p>Posted by <a href="/user?name={{e.username}}"> You</a><span style="margin-left:12px"></span> {{e.date| naturaltime}}</p>
-        {%else %}
-        <p>Posted by <a href="/user?name={{e.username}}"> {{e.username}}</a><span style="margin-left:12px"></span> {{e.date| naturaltime}}</p>
-        {% endif %}
-        <p>{{e.description}}</p>
-        {% if not e.likes and not e.hates %}
-            {% if user.is_authenticated %}
-                {% if e.username != user.username %}
-                    <p>Be the first to vote for this movie: <a href="/vote?id={{e.id}}&vote=1">Like</a> | <a href="/vote?id={{e.id}}&vote=-1">Hate</a></p>
-                {% endif %}
-            {% endif %}
-        {% else %}
-        <a href="like?movie={{e.id}}">{{e.likes}} Likes</a> | <a href="dislike?movie={{e.id}}">{{e.hates}} Hates</a>
-        {% endif %}
-        {% if user.is_authenticated %}
-            {% if e.username != user.username %}
-                    {% load templates_extras %}
+<div class="movie-container">
+    {% if userprofile %}
+        <p>Sort by: <a href="/user?name={{name}}&sort_by=like">Likes</a> | <a href="/user?name={{name}}&sort_by=hate"> Hates</a> | <a href="/user?name={{name}}&sort_by=date"> Dates</a></p>
+        <h2>Movies uploaded by {{name}}</h2>
+    {% else %}
+        <p>Sort by: <a href="/?sort_by=like">Likes</a> | <a href="/?sort_by=hate"> Hates</a> | <a href="/?sort_by=date"> Dates</a></p>
+        <h2>All movies</h2>
+    {% endif %}
 
-                    {% if e|is_like:user %}
-                        <p style="float:right"> You like this movie | <a href="/vote?id={{e.id}}&vote=0">Unlike</a></p>
-                    {% elif e|is_hate:user %}
-                        <p style="float:right"> You hate this movie | <a href="/vote?id={{e.id}}&vote=0">Unhate</a></p>
-                    {% else %}
-                        {% if e.likes or e.hates %}
-                        <p style="float:right"><a href="/vote?id={{e.id}}&vote=1">Like</a> | <a href="/vote?id={{e.id}}&vote=-1">Hate</a></p>
-                        {% endif %}
-                    {% endif%}
-
-                   <!-- <p style="andfloat:right"> You hate this movie | <a href="/vote?id={{e.id}}&status=like">Unhate</a></p> -->
-
-
-            {% endif %}
-        {% endif %}
-
-    </div>
+    {% for movie in movies %}
+        <div class="rcorners">
+            {% include "movie.html" %}
+        </div>
+    {% empty %}
+        <p>No movies found {% if userprofile %} for {{name}}{% endif %}</p>
     {%endfor%}
 
 </div>

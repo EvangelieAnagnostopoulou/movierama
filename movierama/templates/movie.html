@@ -1,0 +1,38 @@
+        {% load humanize %}
+
+        <h3>{{movie.title}}</h3>
+
+        <p>Posted by <a href="/user?name={{movie.username}}">
+            {% if movie.username == user.username %}You{% else %}{{movie.username}}{% endif %}
+            </a><span class="movie-time">{{movie.date| naturaltime}}</span>
+        </p>
+
+        <p>{{movie.description}}</p>
+        {% if not movie.likes and not movie.hates %}
+            {% if user.is_authenticated %}
+                {% if movie.username != user.username %}
+                    <p>Be the first to vote for this movie: <a href="/vote?id={{movie.id}}&vote=1">Like</a> | <a href="/vote?id={{movie.id}}&vote=-1">Hate</a></p>
+                {% endif %}
+            {% endif %}
+        {% else %}
+        <a href="like?movie={{movie.id}}">{{movie.likes}} Likes</a> | <a href="hate?movie={{movie.id}}">{{movie.hates}} Hates</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+            {% if movie.username != user.username %}
+                    {% load templates_extras %}
+
+                    {% if movie|is_like:user %}
+                        <p style="float:right"> You like this movie | <a href="/vote?id={{movie.id}}&vote=0">Unlike</a></p>
+                    {% elif movie|is_hate:user %}
+                        <p style="float:right"> You hate this movie | <a href="/vote?id={{movie.id}}&vote=0">Unhate</a></p>
+                    {% else %}
+                        {% if movie.likes or movie.hates %}
+                        <p style="float:right"><a href="/vote?id={{movie.id}}&vote=1">Like</a> | <a href="/vote?id={{movie.id}}&vote=-1">Hate</a></p>
+                        {% endif %}
+                    {% endif%}
+
+                   <!-- <p style="andfloat:right"> You hate this movie | <a href="/vote?id={{movie.id}}&status=like">Unhate</a></p> -->
+
+
+            {% endif %}
+        {% endif %}

@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^vote', views.vote),
     url(r'^user', views.user_profile),
     url(r'^like', views.like),
-    url(r'^dislike', views.dislike),
+    url(r'^hate', views.hate),
     # Authentication module
     url(r'^accounts/', include('allauth.urls')),
 
