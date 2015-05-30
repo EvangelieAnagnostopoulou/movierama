@@ -3,12 +3,12 @@
 {% block content %}
 
 <div style="width:100%;">
-    <h3>Users who like {{movie_id.title}}</h3>
+    <h3>Users who hate {{movie_id.title}}</h3>
     <ul>
     {% for u in user %}
         <li>{{u}}</li>
     {% empty %}
-        <li>No user likes this movie</li>
+        <li>No user hates this movie</li>
     {% endfor %}
     </ul>
 

@@ -16,7 +16,7 @@ class MovieForm(forms.ModelForm):
 
     class Meta:
         model = Movies
-        exclude = ('date', 'like', 'dislike','status',)
+        exclude = ('date', 'likes', 'hates','status',)
 
 
 
