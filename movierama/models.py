@@ -22,6 +22,9 @@ class MovieRate(models.Model):
     movie = models.ForeignKey(Movies)
     rate = models.DecimalField(max_digits=2,decimal_places=1,)
 
+    class Meta:
+        unique_together = (('user', 'movie'), )
+
     @staticmethod
     def on_delete(sender, instance, *args, **kwargs):
         if instance.rate == 1:

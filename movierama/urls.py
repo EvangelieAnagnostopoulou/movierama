@@ -8,14 +8,17 @@ from movierama import views
 urlpatterns = patterns('',
     # Home page
     url(r'^$', views.WelcomePage, name='home'),
-    url(r'^create_movie', views.create),
+
+    # Movie actions
+    url(r'^create_movie', views.MovieCreate.as_view()),
+    url(r'^edit_movie/(?P<pk>\d+)/', views.MovieUpdate.as_view()),
+    url(r'^delete_movie/(?P<pk>\d+)/', views.MovieDelete.as_view()),
+
     url(r'^vote', views.vote),
     url(r'^user', views.user_profile),
     url(r'^like', views.like),
     url(r'^hate', views.hate),
+
     # Authentication module
     url(r'^accounts/', include('allauth.urls')),
-
-
-    #url(r'^admin/', include(admin.site.urls)),
 )

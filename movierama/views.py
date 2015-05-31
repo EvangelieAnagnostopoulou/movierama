@@ -1,5 +1,7 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
+from django.views.generic import UpdateView, CreateView, DeleteView
 from movierama.forms import MovieForm
 from movierama.models import Movies, MovieRate
 
@@ -39,31 +41,41 @@ def WelcomePage(request):
     return render(request, "mainPage.html", params)
 
 
-#Create movie
-def create(request):
-    if request.method == 'GET':
-        form = MovieForm(initial={'title': "", 'description': "", 'username': "",})
-        params = {'form': form}
-        return render(request, "create_movie.html", params)
-    if request.method == 'POST':
-        form = MovieForm(request.POST)
-        #validate form
-        if not form.is_valid():
-            error = "Invalid value"
-            print form.errors
-            params = {'form': form, 'error': error}
-            return render(request, "create_movie.html", params)
-        else:
-            new_movie = form.save(commit=False)
-            new_movie.username = request.user.username
-            #save to database new movie
-            new_movie.save()
+class MovieCreate(CreateView):
+    form_class = MovieForm
+    model = Movies
+    context_object_name = 'movie'
+    template_name = "movie/create.html"
+    success_url = "/"
 
-            # return to home page
-            return redirect("/")
+    def form_valid(self, form):
+        form.instance.username = self.request.user.username
+        form.save()
+        return super(MovieCreate, self).form_valid(form)
 
 
-#Vote movie
+class MovieUpdate(UpdateView):
+    form_class = MovieForm
+    model = Movies
+    context_object_name = 'movie'
+    template_name = "movie/update.html"
+    success_url = "/"
+
+    def form_valid(self, form):
+        form.instance.username = self.request.user.username
+        form.save()
+        return super(MovieUpdate, self).form_valid(form)
+
+class MovieDelete(DeleteView):
+    form_class = MovieForm
+    model = Movies
+    context_object_name = 'movie'
+    template_name = "movie/delete.html"
+    success_url = "/"
+
+
+# Vote movie
+@login_required
 def vote(request):
     if request.method == 'GET':
         m= request.GET.get('id')
@@ -71,13 +83,17 @@ def vote(request):
         movie =Movies.objects.get(id=m)
 
         if movie.username != request.user.username:
+            import pdb; pdb.set_trace()
             f = MovieRate.objects.filter(movie=movie, user=request.user)
             if vote == 0:
                 f.delete()
             else:
-                MovieRate.objects.create(movie=movie, user=request.user, rate=vote)
+                if f:
+                    return HttpResponseForbidden("You must first unlike/unhate to vote again")
+                else:
+                    MovieRate.objects.create(movie=movie, user=request.user, rate=vote)
         else:
-            return HttpResponseForbidden('You cannnot vote your movie')
+            return HttpResponseForbidden('You can not vote your movie')
 
         movie.likes = MovieRate.objects.filter(movie=movie, rate=1).count()
         movie.hates = MovieRate.objects.filter(movie=movie, rate=-1).count()

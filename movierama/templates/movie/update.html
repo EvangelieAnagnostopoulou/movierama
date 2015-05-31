@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="width:100%;">
+    <h2>Edit movie: {{movie.title}}</h2>
+
+    <form action="/edit_movie/{{movie.id}}/" method="post">
+        {% csrf_token %}
+
+        {% with prompt="Save changes" %}
+            {% include "movie/form.html" %}
+        {% endwith %}
+    </form>
+
+</div>
+
+{% endblock %}

@@ -6,33 +6,31 @@
 
         <div class="login-screen">
           <div class="login-icon">
-            <img src="/static/img/profle.png" alt="Welcome to Mail App">
-            <h4>Welcome to <small>PBPK Modelling </small></h4>
+            <img src="/static/img/profle.png" alt="Welcome to Movies App">
+            <h4>Welcome to <small>Movierama</small></h4>
           </div>
 
           <div class="login-form">
-            {% if error %}
-              <p class="error">{{error}}</p>
+            {% if form.non_field_errors %}
+                <div class="error">
+                    <p>{{form.non_field_errors}}</p>
+                </div>
             {% endif %}
+
             <div class="form-group">
-              <input class="form-control login-field" value="" placeholder="Enter your name" id="login-name" type="text" name="login">
-              <label class="login-field-icon fui-user" for="login-name"></label>
+              <input class="form-control login-field" value="{% if form.login.value %}{{form.login.value}}{% endif %}" placeholder="Enter your name" id="login-name" type="text" name="login">
+              <label class="login-field-icon fui-user" for="login-name"></label>{{form.login.errors}}
             </div>
 
             <div class="form-group">
               <input class="form-control login-field" value="" placeholder="Password" id="login-pass" type="password" name="password">
-              <label class="login-field-icon fui-lock" for="login-pass"></label>
+              <label class="login-field-icon fui-lock" for="login-pass"></label>{{form.password.errors}}
             </div>
 
             <input type="submit" class="btn btn-primary btn-lg btn-block" value="Log in" />
-            <a class="login-link" href="#">Lost your password?</a>
           </div>
         </div>
-         {% if form.errors %}
-            <div class="error">
-                <p>{{form.errors}}</p>
-            </div>
-        {% endif %}
+
     </form>
 
 {% endblock %}

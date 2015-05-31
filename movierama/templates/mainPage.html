@@ -13,7 +13,7 @@
 
     {% for movie in movies %}
         <div class="rcorners">
-            {% include "movie.html" %}
+            {% include "movie/index.html" %}
         </div>
     {% empty %}
         <p>No movies found {% if userprofile %} for {{name}}{% endif %}</p>

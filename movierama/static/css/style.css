@@ -26,10 +26,12 @@ label{
     opacity: 1;
 }
 
-.error {
-    box-shadow: 0 0 5px #96281B;
-    background: #F22613;
-    color: #fff;
+
+.errorlist {
+    color: red;
+    list-style: outside none none;
+    display: inline-block;
+    padding-left: 10px;
 }
 
 .btn-red {
